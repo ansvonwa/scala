@@ -470,25 +470,18 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     override def size = underlying.size
     override def isEmpty: Boolean = underlying.isEmpty
     override def knownSize: Int = size
-    def get(k: String) = {
-      val v = underlying get k
-      if (v != null) Some(v.asInstanceOf[String]) else None
-    }
+    def get(k: String): Option[String] = Option(underlying.get(k).asInstanceOf[String])
 
     def addOne(kv: (String, String)): this.type = { underlying.put(kv._1, kv._2); this }
     def subtractOne(key: String): this.type = { underlying remove key; this }
 
-    override def put(k: String, v: String): Option[String] = {
-      val r = underlying.put(k, v)
-      if (r != null) Some(r.asInstanceOf[String]) else None
-    }
+    override def put(k: String, v: String): Option[String] =
+      Option(underlying.put(k, v).asInstanceOf[String])
 
     override def update(k: String, v: String): Unit = { underlying.put(k, v) }
 
-    override def remove(k: String): Option[String] = {
-      val r = underlying remove k
-      if (r != null) Some(r.asInstanceOf[String]) else None
-    }
+    override def remove(k: String): Option[String] =
+      Option(underlying.remove(k).asInstanceOf[String])
 
     def iterator: Iterator[(String, String)] = new AbstractIterator[(String, String)] {
       val ui = underlying.entrySet.iterator
