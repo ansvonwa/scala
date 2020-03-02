@@ -318,11 +318,17 @@ private[collection] object JavaCollectionWrappers extends Serializable {
     def addOne(kv: (K, V)): this.type = { underlying.put(kv._1, kv._2); this }
     def subtractOne(key: K): this.type = { underlying remove key; this }
 
-    override def put(k: K, v: V): Option[V] = Option(underlying.put(k, v))
+    override def put(k: K, v: V): Option[V] = {
+      if (underlying.containsKey(k)) Some(underlying.put(k, v))
+      else { underlying.put(k, v); None }
+    }
 
     override def update(k: K, v: V): Unit = { underlying.put(k, v) }
 
-    override def remove(k: K): Option[V] = Option(underlying remove k)
+    override def remove(k: K): Option[V] = {
+      if (underlying.containsKey(k)) Some(underlying.remove(k))
+      else None
+    }
 
     def iterator: Iterator[(K, V)] = new AbstractIterator[(K, V)] {
       val ui = underlying.entrySet.iterator
